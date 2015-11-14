@@ -39,7 +39,7 @@ GET /consumer/listNearbyParkings
     input => {
                userLatitude:Double,
                userLongitude:Double,
-               googleDestinationQuery: blob, //@dfrancoeur, let us know how that's gonna look
+               googleDestinationQuery: String,
                expectedParkingDuration:Long
              }
     output => [
