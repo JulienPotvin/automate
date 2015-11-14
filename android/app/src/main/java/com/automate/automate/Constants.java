@@ -5,5 +5,9 @@ package com.automate.automate;
  */
 public interface Constants {
 
-    String API_URL = "http://localhost:2131/";
+    String HTTP = "http";
+
+    String HOST = "localhost";
+
+    Integer PORT = 2131;
 }

@@ -11,7 +11,8 @@ import java.util.List;
  */
 public interface ParkingSpotsService {
 
-    void query(String query,  Location location,
-                       CompletionCallback<List<Marker>> callback);
+    Long DEFAULT_PARKING_DURATION = 1L;
+
+    AutomateResult<List<Marker>> findNearby(String query, Location location, Long duration);
 
 }
