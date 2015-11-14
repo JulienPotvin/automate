@@ -10,6 +10,15 @@ POST /parking/state
              }  
     output => {}
 
+
+POST /parking/regulate  
+
+    input => {
+               parkingIds: [UUID],
+               unavailabilityIntervals: [Interval]
+             }
+    output=> {}
+
 GET  /parking/list
 
     input  => {}
@@ -59,7 +68,7 @@ GET /consumer/listNearbyParkings
                   ...
               ]
 
-POST /regulation  
+POST /parking/regulate   
 
     input => {
                parkingIds: [UUID],
