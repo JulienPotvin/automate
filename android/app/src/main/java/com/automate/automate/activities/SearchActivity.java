@@ -1,4 +1,4 @@
-package com.automate.automate;
+package com.automate.automate.activities;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.automate.automate.R;
 import com.google.android.gms.actions.SearchIntents;
 
 import static android.app.ProgressDialog.show;
@@ -17,7 +18,7 @@ import static java.lang.String.format;
 
 public class SearchActivity extends AppCompatActivity {
 
-    public static String ACTIVITY_NAME = SearchActivity.class.getName();
+    public static String LOGGER_TAG = SearchActivity.class.getName();
 
 
     @Override
@@ -30,7 +31,7 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (SearchIntents.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.d(ACTIVITY_NAME, format("Automate received query: %s", query));
+            Log.d(LOGGER_TAG, format("Automate received query: %s", query));
 
             handleQuery(query);
         }
@@ -38,7 +39,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private void handleQuery(String query) {
         if (TextUtils.isEmpty(query)) {
-            TextView txtSearchQuery = (TextView) findViewById(R.id.search_query);
+            TextView txtSearchQuery = (TextView) findViewById(R.id.failed_query);
             txtSearchQuery.setText(getString(R.string.empty_query));
         } else {
             showSearchLoadingPopup(query);
