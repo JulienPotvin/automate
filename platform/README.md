@@ -77,10 +77,10 @@ parking_id:UUUID | geo_point :LatLong | base_price_per_hour: double | availabili
 
 Regulations
 ===========
-parking_id: UUID |
+parking_id: UUID | ...
 
 
 Discounts
 =========
 
-parking_id: UUID |
+parking_id: UUID | ...
