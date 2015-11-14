@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:fitsSystemWindows="true"
-    tools:context="com.automate.automate.SearchActivity">
+    tools:context="com.automate.automate.activities.SearchActivity">
 
     <android.support.design.widget.AppBarLayout android:layout_height="wrap_content"
         android:layout_width="match_parent" android:theme="@style/AppTheme.AppBarOverlay">
@@ -17,7 +17,7 @@
             android:id="@+id/failed_query"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:labelFor="@id/query_input" />
+            android:labelFor="@+id/query_input" />
 
         <EditText
             android:id="@+id/query_input"
