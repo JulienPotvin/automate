@@ -43,8 +43,8 @@ router.get('/list', function(req, res){
       function(error,response){
         if(error){
           console.log('oooo nooo! '+error)
-        }else{
-          res.json(toSpots(response)
+        } else {
+          res.json(toSpots(response))
         }
       });
 })
