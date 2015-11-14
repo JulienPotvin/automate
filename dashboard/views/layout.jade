@@ -2,6 +2,16 @@ doctype html
 html
   head
     title= title
+    link(rel='stylesheet', href='/node_modules/bootstrap/dist/css/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/paper/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+
+    script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyB3J5aF1xolXLORx3RlFtbX9JP2AzcWlrc')
+    script(src='/node_modules/angular/angular.js')
+    script(src='/javascripts/dashboard.js')
+    script(src='/javascripts/header/header.js')
+    script(src='/javascripts/map/map.js')
+
   body
+    block header
     block content
