@@ -21,7 +21,6 @@ var toSpots = function(raw){
            .get("hits")
            .map(toSpot);
 }
-
 /*
   GET
   input  => {}

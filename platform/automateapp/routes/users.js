@@ -12,4 +12,19 @@ router.get('/userlist', function(req, res) {
     });
 });
 
+router.get('/slot/:spotid', function(req, res) {
+    var es = req.es;
+
+    var collection = es.get({
+	  index: 'automate',
+	  type: 'spots',
+	  id: req.params.spotid
+	}, function (error, response) {
+	  return res.json(response);
+	});
+});
+
+
+
+
 module.exports = router;
