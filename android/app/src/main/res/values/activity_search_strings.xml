@@ -2,4 +2,6 @@
 <resources>
     <string name="empty_query">Sorry we didn\'t catch what you said, can you type it?</string>
     <string name="query_loading_title">Looking for parking spots</string>
+    <string name="search_button_label">Search</string>
+    <string name="query_input_placeholder">Where do you want to park?</string>
 </resources>
