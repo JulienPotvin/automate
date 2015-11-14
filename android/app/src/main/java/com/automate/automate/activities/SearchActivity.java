@@ -5,7 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.automate.automate.R;
+import com.automate.automate.exceptions.AutomateException;
+import com.automate.automate.services.AutomateResult;
+import com.automate.automate.services.CompletionCallback;
+import com.automate.automate.services.ParkingSpotsService;
+import com.automate.automate.services.ParkingSpotsServiceImpl;
+import com.automate.automate.tasks.FindNearbyAsyncTask;
 import com.google.android.gms.actions.SearchIntents;
+import com.google.android.gms.maps.model.Marker;
+
+import java.util.List;
 
 import static android.app.ProgressDialog.show;
 import static java.lang.String.format;
@@ -33,6 +46,8 @@ public class SearchActivity extends AppCompatActivity {
     private View mQueryFormView;
     private EditText mQueryInput;
 
+    private ParkingSpotsService parkingSpotsService;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +58,10 @@ public class SearchActivity extends AppCompatActivity {
 
         mQueryFormView = findViewById(R.id.query_form);
         mProgressView = findViewById(R.id.query_progress);
+
+        parkingSpotsService = new ParkingSpotsServiceImpl();
+        locationManager = (LocationManager)
+                getSystemService(Context.LOCATION_SERVICE);
 
 
         Button searchButton = (Button) findViewById(R.id.search_button);
@@ -57,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (SearchIntents.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.d(LOGGER_TAG, format("Automate received query: %s", query));
+            Log.d(LOGGER_TAG, format("Automate received findNearby: %s", query));
 
             handleQuery(query);
         }
@@ -77,8 +96,21 @@ public class SearchActivity extends AppCompatActivity {
 
     private void attemptQuery(String query) {
         showProgress(true);
-        //QUERY
-        showProgress(false);
+        Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        FindNearbyAsyncTask task = new FindNearbyAsyncTask(query, locationGPS, null,
+                parkingSpotsService, new CompletionCallback<List<Marker>>(){
+            @Override
+            public void onCompletion(AutomateResult<List<Marker>> result) {
+                showProgress(false);
+                if (result.hasError()){
+                    Toast.makeText(getBaseContext(), "This failed", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), "This worked", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        task.execute();
     }
 
     /**

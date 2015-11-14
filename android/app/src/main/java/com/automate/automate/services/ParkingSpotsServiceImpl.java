@@ -6,13 +6,14 @@ import com.automate.automate.exceptions.AutomateException;
 import com.automate.automate.http.ParkingClient;
 import com.automate.automate.models.ParkingSpot;
 import com.google.android.gms.maps.model.Marker;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 
 import java.util.Collections;
 import java.util.List;
 
-import static com.automate.automate.http.ParkingClient.builder;
-import static com.automate.automate.http.ParkingClient.parkingUrl;
+import static com.automate.automate.http.HttpUtils.requestBuilder;
+import static com.automate.automate.http.ParkingClient.nearbyParkingUrl;
 
 /**
  * Created by davidfrancoeur on 2015-11-14.
@@ -21,29 +22,35 @@ public class ParkingSpotsServiceImpl implements ParkingSpotsService {
 
     private final ParkingClient parkingClient;
 
+    public ParkingSpotsServiceImpl() {
+        this.parkingClient =  new ParkingClient(new OkHttpClient());
+    }
+
     public ParkingSpotsServiceImpl(ParkingClient parkingClient) {
         this.parkingClient = parkingClient;
     }
 
     @Override
-    public void query(String query, Location location,
-                              CompletionCallback<List<Marker>> callback) {
+    public AutomateResult<List<Marker>> findNearby(String query, Location location, Long duration) {
+
+        String degreesLatitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES);
+        String degreeLongitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
+        String durationStr = duration != null ? duration.toString() : "";
 
         Request request =
-                builder()
+                requestBuilder()
                 .get()
-                .url(parkingUrl(query, location.getLatitude(), location.getLongitude()))
+                .url(nearbyParkingUrl(query, durationStr,
+                                    degreesLatitude, degreeLongitude))
                 .build();
 
         try {
             String payload = parkingClient.execute(request);
             List<ParkingSpot> parkingSpots = ParkingSpot.fromArrayPayload(payload);
 
-            callback.onCompletion(Collections.<Marker>emptyList(), null);
+            return new AutomateResult<>(Collections.<Marker>emptyList(), null);
         } catch (AutomateException ex){
-            callback.onCompletion(Collections.<Marker>emptyList(), ex);
+            return new AutomateResult<>(null, ex);
         }
-
-
     }
 }
