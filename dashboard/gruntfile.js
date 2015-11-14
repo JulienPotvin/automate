@@ -17,13 +17,13 @@ module.exports = function(grunt) {
     },
 
     watch: {
-        scripts: {
-          files: ['bin/www', '**/*.js'],
-          tasks: ['nodemon'],
-          options: {
-            spawn: false,
-          },
+      scripts: {
+        files: ['bin/www', '**/*.js'],
+        tasks: ['nodemon'],
+        options: {
+          spawn: false,
         },
-      }
+      },
+    },
   });
 };
