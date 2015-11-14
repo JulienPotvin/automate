@@ -12,8 +12,8 @@ import org.json.JSONObject;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Value;
-import lombok.experimental.Builder;
 
 /**
  * Created by davidfrancoeur on 2015-11-14.
