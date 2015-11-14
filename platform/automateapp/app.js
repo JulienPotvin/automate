@@ -8,6 +8,14 @@ var bodyParser = require('body-parser');
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/nodetest2');
+var elasticsearch = require('elasticsearch');
+
+//Elasticsearch
+
+var client = new elasticsearch.Client({
+  host: 'localhost:9200',
+  log: 'debug'
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -31,8 +39,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Make our db accessible to our router
 app.use(function(req,res,next){
     req.db = db;
+    req.es = client;
     next();
 });
+
 
 app.use('/', routes);
 app.use('/users', users);
