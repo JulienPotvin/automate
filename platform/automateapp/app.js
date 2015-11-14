@@ -18,8 +18,10 @@ var client = new elasticsearch.Client({
 });
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
-var parkings = require('./routes/parkings');
+// var users = require('./routes/users');
+var parking = require('./routes/parking');
+var sponsor = require('./routes/sponsor');
+var consumer = require('./routes/consumer');
 
 var app = express();
 
@@ -45,8 +47,9 @@ app.use(function(req,res,next){
 
 
 app.use('/', routes);
-app.use('/users', users);
-app.use('/parkings',parkings)
+app.use('/parking',parking);
+app.use('/sponsor',sponsor);
+app.use('/consumer',consumer);
 
 
 // catch 404 and forward to error handler
