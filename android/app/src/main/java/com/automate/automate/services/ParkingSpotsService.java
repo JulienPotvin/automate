@@ -2,7 +2,7 @@ package com.automate.automate.services;
 
 import android.location.Location;
 
-import com.google.android.gms.maps.model.Marker;
+import com.automate.automate.models.ParkingSpot;
 
 import java.util.List;
 
@@ -13,6 +13,6 @@ public interface ParkingSpotsService {
 
     Long DEFAULT_PARKING_DURATION = 1L;
 
-    AutomateResult<List<Marker>> findNearby(String query, Location location, Long duration);
+    AutomateResult<List<ParkingSpot>> findNearby(String query, Location location, Long duration);
 
 }

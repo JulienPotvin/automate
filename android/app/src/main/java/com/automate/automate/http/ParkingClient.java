@@ -9,7 +9,6 @@ import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 
-import static com.automate.automate.Constants.HOST;
 import static com.automate.automate.http.HttpUtils.urlBuilder;
 
 /**
