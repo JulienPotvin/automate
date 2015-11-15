@@ -27,4 +27,9 @@ router.get('/parking/list', function(req, res) {
   ]);
 });
 
+router.post('/parking/alert', function(req, res) {
+  console.log(req.body);
+  res.sendStatus(200);
+});
+
 module.exports = router;

@@ -14,7 +14,7 @@ angular
       }
     };
   })
-  .controller('MapCtrl', function($timeout, google, mapService) {
+  .controller('MapCtrl', function($rootScope, google, mapService) {
     var vm = this;
 
     vm.init = function() {
@@ -52,6 +52,8 @@ angular
         selected.splice(index, 1);
         this.setIcon('/images/markers/default.png');
       }
+
+      $rootScope.$apply();
     };
   })
   .service('mapService', function($http) {

@@ -1,3 +1,6 @@
 angular
-  .module('automate.dashboard', [])
-  .value('google', window.google);
+  .module('automate.dashboard', [
+    'ui.bootstrap.datetimepicker'
+  ])
+  .value('google', window.google)
+  .value('moment', window.moment);
