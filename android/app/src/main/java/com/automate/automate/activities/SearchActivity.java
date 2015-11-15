@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -22,8 +23,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.automate.automate.Constants;
 import com.automate.automate.R;
 import com.automate.automate.exceptions.AutomateException;
+import com.automate.automate.models.ParkingSpot;
 import com.automate.automate.services.AutomateResult;
 import com.automate.automate.services.CompletionCallback;
 import com.automate.automate.services.ParkingSpotsService;
@@ -32,9 +35,11 @@ import com.automate.automate.tasks.FindNearbyAsyncTask;
 import com.google.android.gms.actions.SearchIntents;
 import com.google.android.gms.maps.model.Marker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.ProgressDialog.show;
+import static com.automate.automate.Constants.EXTRAS_PARKING_SPOTS;
 import static java.lang.String.format;
 
 public class SearchActivity extends AppCompatActivity {
@@ -99,14 +104,21 @@ public class SearchActivity extends AppCompatActivity {
         Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         FindNearbyAsyncTask task = new FindNearbyAsyncTask(query, locationGPS, null,
-                parkingSpotsService, new CompletionCallback<List<Marker>>(){
+                parkingSpotsService, new CompletionCallback<List<ParkingSpot>>(){
             @Override
-            public void onCompletion(AutomateResult<List<Marker>> result) {
+            public void onCompletion(AutomateResult<List<ParkingSpot>> result) {
                 showProgress(false);
                 if (result.hasError()){
-                    Toast.makeText(getBaseContext(), "This failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "This failed", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), "This worked", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "This worked", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), ParkingsActivity.class);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelableArrayList(EXTRAS_PARKING_SPOTS, new ArrayList<>(result.getResult()));
+
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             }
         });

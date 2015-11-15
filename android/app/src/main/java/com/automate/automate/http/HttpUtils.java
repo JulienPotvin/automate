@@ -6,6 +6,7 @@ import com.squareup.okhttp.Request;
 
 import static com.automate.automate.Constants.HOST;
 import static com.automate.automate.Constants.HTTP;
+import static com.automate.automate.Constants.PORT;
 
 /**
  * Created by davidfrancoeur on 2015-11-14.
@@ -19,7 +20,7 @@ public class HttpUtils {
         return new HttpUrl.Builder()
                 .scheme(HTTP)
                 .host(HOST)
-                .port(Constants.PORT);
+                .port(PORT);
     }
 
 }
