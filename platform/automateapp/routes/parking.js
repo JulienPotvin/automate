@@ -111,10 +111,10 @@ router.get('/listStatesNoMagic', function(req,res){
 router.post('/state', function(req, res) {
   var es = req.es;
   var body = req.body;
-  console.log(body);
+
   var parkingId = body.parkingId;
   var state = body.state;
-  console.log('parkingId' +parkingId );
+
   es.update({
 	  index: 'automate',
 	  type: 'spots',
@@ -128,13 +128,10 @@ router.post('/state', function(req, res) {
 	}, function (error, response) {
 		if(error){
 		      console.log('oooo noon! ' + error);
-		    } else {
-		      res.sendStatus(200);
-		    }
+    } else {
+      res.sendStatus(200);
+    }
 	})
-
-  // TODO : UPDATE parkingSpotIndex
- /* res.sendStatus(200);*/
 });
 
 

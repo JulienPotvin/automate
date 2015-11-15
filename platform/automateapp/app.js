@@ -13,7 +13,7 @@ var elasticsearch = require('elasticsearch');
 var client = new elasticsearch.Client({
   host: 'dockerhost:9200',
   log: 'debug'
-});
+}); 
 
 var routes = require('./routes/index');
 // var users = require('./routes/users');
