@@ -13,7 +13,7 @@
     <tbody>
       <tr ng-repeat="p in vm.mapService.parkings">
         <td>{{ ::p.parkingId }}</td>
-        <td>{{ ::p.available.toString() | uppercase }}</td>
+        <td>{{ ::p.physicalAvailability.toString() | uppercase }}</td>
         <td>$ {{ ::p.pricingInfo.basePrice | number: 2 }}</td>
         <td></td>
         <td>{{ vm.mapService.isSurge().toString() | uppercase }}</td>

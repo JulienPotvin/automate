@@ -78,11 +78,21 @@ angular
 
     this.getAvailableParkings = function() {
       return this.parkings.filter(function(p) {
-        return p.available === true;
+        return p.physicalAvailability === true;
       })
     };
 
     this.isSurge = function() {
+      var available = this.getAvailableParkings();
+
+      if (!this.parkings.length) {
+        return false;
+      }
+
+      return (available.length / this.parkings.length) <= 0.4;
+    };
+
+    this.isLow = function() {
       var available = this.getAvailableParkings();
 
       if (!this.parkings.length) {
