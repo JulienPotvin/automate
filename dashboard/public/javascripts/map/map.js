@@ -14,50 +14,73 @@ angular
       }
     };
   })
-  .controller('MapCtrl', function($rootScope, google, mapService) {
+  .controller('MapCtrl', function($rootScope, $scope, google, mapService) {
     var vm = this;
 
     vm.init = function() {
-      var lagare = new google.maps.LatLng(45.5255694, -73.5948246);
+      var lagare = new google.maps.LatLng(45.5955694, -73.5948246);
 
       vm.map = new google.maps.Map(document.getElementById('map'), {
         center: lagare,
-        zoom: 17
+        zoom: 11
       });
 
+      vm.mapService = mapService;
+
       mapService.getParkingList().then(function(parkings) {
-        parkings.forEach(function(p) {
-          var marker = new google.maps.Marker({
+        vm.refreshParkings(parkings);
+      });
+
+      $scope.$watch('vm.mapService.parkings', function(parkings) {
+        vm.refreshParkings(parkings);
+      });
+    };
+
+    vm.refreshParkings = function(parkings) {
+      if (!parkings) { return; }
+
+      parkings.forEach(function(p) {
+        var marker = mapService.markers[p.parkingId];
+
+        if (!marker) {
+          marker = new google.maps.Marker({
             position: {
               lat: p.parkingLocation.lat,
               lng: p.parkingLocation.long,
             },
-            icon: '/images/markers/grey.png',
             map: vm.map,
             title: p.parkingId.toString()
           });
-          marker.addListener('click', vm.toggleMarkerSelection);
-        });
+          marker.addListener('click', function() {
+            vm.toggleMarkerSelection(p, marker);
+          });
+          mapService.markers[p.parkingId] = marker;
+        }
+
+        if (!mapService.selected[p.parkingId]) {
+          mapService.setIconForMarker(p, marker);
+        }
       });
     };
 
-    vm.toggleMarkerSelection = function() {
+    vm.toggleMarkerSelection = function(parking, marker) {
       var selected = mapService.selected;
-      var index = selected.indexOf(this);
+      var id = parking.parkingId;
 
-      if (index === -1) {
-        selected.push(this);
-        this.setIcon('/images/markers/red.png');
+      if (!selected[id]) {
+        selected[id] = parking;
+        marker.setIcon('/images/markers/blue.png');
       } else {
-        selected.splice(index, 1);
-        this.setIcon('/images/markers/grey.png');
+        delete selected[id];
+        mapService.setIconForMarker(parking, marker);
       }
 
       $rootScope.$apply();
     };
   })
   .service('mapService', function($http, $q) {
-    this.selected = [];
+    this.selected = {};
+    this.markers = {};
 
     this.getParkingList = function(force) {
       var self = this;
@@ -89,7 +112,7 @@ angular
         return false;
       }
 
-      return (available.length / this.parkings.length) <= 0.4;
+      return (available.length / this.parkings.length) >= 0.4;
     };
 
     this.isLow = function() {
@@ -99,7 +122,7 @@ angular
         return false;
       }
 
-      return (available.length / this.parkings.length) <= 0.4;
+      return (available.length / this.parkings.length) >= 0.6;
     };
 
     this.calculateParkingPrice = function(parking) {
@@ -111,5 +134,14 @@ angular
       }
 
       return price;
+    };
+
+    this.setIconForMarker = function(parking, marker) {
+      var color = parking.physicalAvailability ? 'green' : 'red';
+      var marker = this.markers[parking.parkingId];
+
+      if (marker) {
+        marker.setIcon('/images/markers/' + color + '.png');
+      }
     };
   });
