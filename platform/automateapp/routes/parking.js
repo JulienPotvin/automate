@@ -76,24 +76,28 @@ var toStates = function(raw){
 var magic = function(states){
   var magicIndex =  Math.floor(Math.random() * states.length);
   var state = states[magicIndex];
+  console.log(state)
   state.physicalAvailability = !state.physicalAvailability;
+  return states
 }
 router.get('/listStates', function(req, res){
+  res.json(magic(req.states));
+});
+
+
+router.get('/listStatesNoMagic', function(req,res){
   var es = req.es;
   es.search({
     index : 'automate',
     query : { match_all : {} }
-  },function(error,response){
+  },function(error,response) {
     if(error){
       console.log('oooo noon! ' + error);
     } else {
-      var states =toStates(response)
-      magic(states)
-      res.json(states)
+      res.json(toStates(response))
     }
   }
 );
-
 });
 
 /* ok
@@ -128,7 +132,7 @@ router.post('/state', function(req, res) {
 		      res.sendStatus(200);
 		    }
 	})
-  
+
   // TODO : UPDATE parkingSpotIndex
  /* res.sendStatus(200);*/
 });

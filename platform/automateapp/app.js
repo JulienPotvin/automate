@@ -35,10 +35,49 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var memstates;
+
+var getStates = function() {
+  var toStates = function(raw){
+    var hits = raw.hits.hits
+    return hits.map(function(hit){
+      var root = hit._source;
+      var latLong = root.spot_latlon;
+      return {
+          parkingId: root.spot_id,
+          parkingLocation: {
+              lat: latLong[0],
+              long: latLong[1]
+          },
+          pricingInfo: {
+            basePrice: 2.75,
+            surgePriceIncrease: 0.25,
+            declinePriceDecrease: 0.25
+          },
+          physicalAvailability: root.spot_availability
+       };
+    });
+  };
+
+
+  return client.search({
+    index : 'automate',
+    query : { match_all : {} }
+  },function(error,response) {
+    if(error) {
+      console.log('oooo noon! ' + error);
+    } else {
+      memstates = toStates(response);
+    }
+  });
+};
+
+getStates();
 
 //Make our db accessible to our router
 app.use(function(req,res,next){
     req.es = client;
+    req.states = memstates;
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, OPTIONS, DELETE');
     res.header('Access-Control-Max-Age', '3600');
