@@ -4,23 +4,51 @@ var router = express.Router();
 /*
  * POST discount
    {
-    sponsorId:UUID,
     parkingIds: Set[UUID],
-    discountRate: Double,
-    timerange: Set[ Interval ]
+    message: String
   }.
  */
 router.post('/discount', function(req, res) {
   var es = req.es;
   var body = req.body
 
-  var sponsorId = body.sponsorId;
-  var parkingsIds = body.parkingIds;
-  var rate = body.discountRate;
-  var timeranges = body.timerange;
-  console.log(sponsorId,parkingsIds,rate,timeranges);
+  var parkingIds = body.parkingIds;
+  var discount = body.message;
   //TODO : UPDATE parkingSpotIndex
-  res.sendStatus(200)
+
+  var parkingId = parkingIds
+  console.log(parkingId);
+  console.log(discount);
+
+  var updated = 0;
+
+
+  parkingIds.forEach(function(parkingId) {
+    es.update({
+  	  index: 'automate',
+  	  type: 'spots',
+  	  id: parkingId ,
+  	  body: {
+  	    // put the partial document under the `doc` key
+  	    doc: {
+  	      'spot_discount': discount
+  	    }
+  	  }
+  	}, function (error, response) {
+  		if(error){
+  		      console.log('oooo noon! ' + error);
+      } else {
+        updated += 1;
+
+        if (updated === parkingIds.length) {
+          res.sendStatus(200);
+        }
+      }
+  	})
+
+  });
+
+
 });
 
 

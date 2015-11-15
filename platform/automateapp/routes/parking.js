@@ -129,7 +129,7 @@ router.post('/state', function(req, res) {
 		if(error){
 		      console.log('oooo noon! ' + error);
     } else {
-      res.sendStatus(200);
+      res.json(200);
     }
 	})
 });

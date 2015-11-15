@@ -6,15 +6,19 @@ var fetchNearbyParkings = function(es,qlat,qlon,callback){
   var toParkings = function(raw){
     var toParking = function(hit){
       var root = hit._source;
+      console.log('discount bitches');
+      console.log(root.spot_discount);
       var parking = {
         parkingId: root.spot_id ,
         parkingLocation: {
           lat: root.spot_latlon[1],
           long: root.spot_latlon[0],
-        },
+        }, 
         basePrice: root.spot_base_price,
-        physicalAvailability: root.spot_availability
+        physicalAvailability: root.spot_availability,
+        discount: root.spot_discount
       };
+      console.log(parking);
       return parking;
     }
 
@@ -28,7 +32,7 @@ var fetchNearbyParkings = function(es,qlat,qlon,callback){
     type: 'spots',
     body: {
       from: 0,
-      size: 12,
+      size: 14,
       query: {
         filtered: {
                 filter: {
