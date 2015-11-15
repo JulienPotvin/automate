@@ -17,10 +17,13 @@ angular
   .controller('ModalInstanceCtrl', function($scope, $uibModalInstance, isStoreMode) {
     $scope.isStoreMode = isStoreMode;
 
+    $scope.model = {};
+
     console.log($scope.isStoreMode);
 
     $scope.ok = function () {
-      $uibModalInstance.close();
+      debugger;
+      $uibModalInstance.close($scope.model.message);
     };
 
     $scope.cancel = function () {

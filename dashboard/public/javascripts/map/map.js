@@ -69,10 +69,16 @@ angular
         }
       });
 
-      modalInstance.result.then(function() {
-        mapService.selected = {};
-        vm.mapControls.style.display = 'none';
-        $rootScope.$emit('automate.alert.snow');
+      modalInstance.result.then(function(message) {
+        var selected = mapService.selected;
+        if (vm.isStoreMode) {
+          var keys = Object.keys(selected);
+          mapService.postDiscount(keys, message);
+        } else {
+          mapService.selected = {};
+          vm.mapControls.style.display = 'none';
+          $rootScope.$emit('automate.alert.snow');
+        }
       });
     };
 
@@ -156,7 +162,7 @@ angular
       }
     };
   })
-  .service('mapService', function($http, $q) {
+  .service('mapService', function($http, $q, $rootScope) {
     this.selected = {};
     this.markers = {};
 
@@ -164,7 +170,7 @@ angular
       var self = this;
 
       if (!self.parkings || force) {
-        return $http.get('http://localhost:3001/parking/listStates').then(function(response) {
+        return $http.get('http://192.168.121.193:3000/parking/listStatesNoMagic').then(function(response) {
           self.parkings = response.data;
           return self.parkings;
         });
@@ -228,5 +234,14 @@ angular
           marker.setIcon('/images/markers/' + color + '.png');
         }
       }
+    };
+
+    this.postDiscount = function(ids, message) {
+      return $http.post('http://192.168.121.193:3000/sponsor/discount', {
+        parkingIds: ids,
+        message: message
+      }).then(function() {
+        $rootScope.$emit('automate.alert.discount');
+      });
     };
   });

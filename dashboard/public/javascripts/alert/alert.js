@@ -19,6 +19,7 @@ angular
 
     vm.init = function() {
       $rootScope.$on('automate.alert.snow', vm.showAlert);
+      $rootScope.$on('automate.alert.discount', vm.showAlert);
     };
 
     vm.showAlert = function() {

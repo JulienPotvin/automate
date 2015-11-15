@@ -5,20 +5,10 @@ angular
       restrict: 'E',
       templateUrl: '/javascripts/stores/discount.html',
       replace: true,
-      controller: 'DiscountCtrl',
-      scope: {},
-      controllerAs: 'vm',
-      bindToController: true,
-      link: function(scope, element, attrs, ctrl) {
-        ctrl.init();
+      scope: true,
+      link: function(scope) {
+        scope.model.code = 'X45M345';
+        scope.model.message = 'Spend $50 of more and we will pay for 2h parking';
       }
     };
-  })
-  .controller('DiscountCtrl', function() {
-    var vm = this;
-
-    vm.code = 'X45M345';
-    vm.message = 'Spend $50 of more and we will pay for 2h parking';
-
-    vm.init = function() {};
   });
