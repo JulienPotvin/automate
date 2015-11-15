@@ -19,10 +19,11 @@ public class ParkingClient {
     public final static String CONSUMER = "consumer";
     public final static String PARKING = "parking";
     public final static String LIST_STATES = "listStates";
+    public final static String NEARBY_PARKINGS = "listNearbyParkings";
 
-    public final static String NEARBY_PARKINGS = "ListNearbyParkings";
-    public final static String QUERY_PARAM_LATITUDE = "userLatitude";
-    public final static String QUERY_PARAM_LONGITUDE = "userLongitude";
+    public final static String QUERY_PARAM_LATITUDE = "lat";
+    public final static String QUERY_PARAM_LONGITUDE = "lon";
+
     public final static String QUERY_PARAM_QUERY = "googleDestinationQuery";
     public final static String QUERY_PARAM_PARKING_DURATION = "expectedParkingDuration";
 
@@ -44,15 +45,12 @@ public class ParkingClient {
         }
     }
 
-    public static HttpUrl nearbyParkingUrl(String query, String parkingDuration,
-                                           String latitude, String longitude){
+    public static HttpUrl nearbyParkingUrl(String latitude, String longitude){
         return urlBuilder()
                 .addPathSegment(CONSUMER)
                 .addPathSegment(NEARBY_PARKINGS)
-                .addQueryParameter(QUERY_PARAM_QUERY, query)
                 .addQueryParameter(QUERY_PARAM_LATITUDE, latitude)
                 .addQueryParameter(QUERY_PARAM_LONGITUDE, longitude)
-                .addQueryParameter(QUERY_PARAM_PARKING_DURATION, parkingDuration)
                 .build();
     }
 

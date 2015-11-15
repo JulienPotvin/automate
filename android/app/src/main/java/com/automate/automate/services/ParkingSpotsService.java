@@ -13,6 +13,7 @@ public interface ParkingSpotsService {
 
     Long DEFAULT_PARKING_DURATION = 1L;
 
-    AutomateResult<List<ParkingSpot>> findNearby(String query, Location location, Long duration);
+    AutomateResult<List<ParkingSpot>> findNearby(Location location, Long duration);
+    AutomateResult<List<ParkingSpot>> findNearbyDestination(String query, Location location, Long duration);
 
 }
