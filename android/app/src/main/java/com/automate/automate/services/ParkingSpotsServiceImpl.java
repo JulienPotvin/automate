@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.automate.automate.http.HttpUtils.requestBuilder;
 import static com.automate.automate.http.ParkingClient.nearbyParkingUrl;
+import static com.automate.automate.http.ParkingClient.parkingUrl;
 
 /**
  * Created by davidfrancoeur on 2015-11-14.
@@ -38,25 +39,20 @@ public class ParkingSpotsServiceImpl implements ParkingSpotsService {
         String degreeLongitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
         String durationStr = duration != null ? duration.toString() : "";
 
+        try {
+            Request request =
+                    requestBuilder()
+                            .get()
+                            .url(parkingUrl())
+                            .build();
 
+            String payload = parkingClient.execute(request);
+            List<ParkingSpot> parkingSpots = ParkingSpot.fromArrayPayload(payload);
 
-        return new AutomateResult<>(spots, null);
-
-//        Request request =
-//                requestBuilder()
-//                        .get()
-//                        .url(nearbyParkingUrl(query, durationStr,
-//                                degreesLatitude, degreeLongitude))
-//                        .build();
-//        try {
-//
-//            String payload = parkingClient.execute(request);
-//            List<ParkingSpot> parkingSpots = ParkingSpot.fromArrayPayload(payload);
-//
-//            return new AutomateResult<>(spots, null);
-//        } catch (AutomateException ex){
-//            return new AutomateResult<>(null, ex);
-//        }
+            return new AutomateResult<>(parkingSpots, null);
+        } catch (AutomateException ex){
+            return new AutomateResult<>(null, ex);
+        }
     }
 
     private static final List<ParkingSpot> spots =

@@ -1,0 +1,18 @@
+# Requires platform
+node-fe:
+  build: dashboard/.
+  links:
+    - node-backend:backendhost
+  ports:
+    - "3000:3000"
+
+#Requires ES
+node-backend:
+  build: platform/automateapp/.
+  links:
+    - es:dockerhost
+  ports:
+    - "3001:3001"
+#ES
+es:
+  build: data/es/.

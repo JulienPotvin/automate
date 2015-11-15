@@ -64,7 +64,6 @@ public class ParkingsActivity extends FragmentActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
         if (spots != null && !spots.isEmpty()) {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
             for (ParkingSpot spot : spots){
