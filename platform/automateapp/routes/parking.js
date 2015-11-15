@@ -49,8 +49,10 @@ router.get('/list', function(req, res){
 });
 
 //FOR TEST ONLY
-var toState = function(raw){
-  return raw.hits.hits.map(function(hit){
+
+var toStates = function(raw){
+  var hits = raw.hits.hits
+  return hits.map(function(hit){
     var root = hit._source;
     var latLong = root.spot_latlon;
     return {
@@ -63,13 +65,18 @@ var toState = function(raw){
                 basePrice : 2.75,
                 surgePriceIncrease: 0.25,
                 declinePriceDecrease : 0.25
-              }
-              // physicalAvailability: root.spot_availability,
-              // base_price: root.spot_base_price,
+              },
+              physicalAvailability: root.spot_availability
            };
   });
 
 
+}
+
+var magic = function(states){
+  var magicIndex =  Math.floor(Math.random() * states.length);
+  var state = states[magicIndex];
+  state.physicalAvailability = !state.physicalAvailability;
 }
 router.get('/listStates', function(req, res){
   var es = req.es;
@@ -80,7 +87,9 @@ router.get('/listStates', function(req, res){
     if(error){
       console.log('oooo noon! ' + error);
     } else {
-      res.json(toState(response))
+      var states =toStates(response)
+      magic(states)
+      res.json(states)
     }
   }
 );
