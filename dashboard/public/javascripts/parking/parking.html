@@ -1,0 +1,23 @@
+<div class="parkings">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Available</th>
+        <th>Base Price</th>
+        <th>Store Discount</th>
+        <th>Availability Surge</th>
+        <th>Current Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="p in vm.mapService.parkings">
+        <td>{{ ::p.parkingId }}</td>
+        <td>{{ ::p.available.toString() | uppercase }}</td>
+        <td>$ {{ ::p.pricingInfo.basePrice | number: 2 }}</td>
+        <td></td>
+        <td>{{ vm.mapService.isSurge().toString() | uppercase }}</td>
+        <td>$ {{ vm.mapService.calculateParkingPrice(p) | number: 2 }}</td>
+    </tbody>
+  </table>
+</div>
