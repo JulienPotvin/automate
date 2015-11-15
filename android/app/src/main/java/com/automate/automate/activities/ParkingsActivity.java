@@ -1,5 +1,7 @@
 package com.automate.automate.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -23,6 +25,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.NumberFormat;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,7 @@ import static com.automate.automate.Constants.EXTRAS_PARKING_SPOTS;
 public class ParkingsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private final static String LOGGER_TAG = ParkingsActivity.class.getName();
+    private final static NumberFormat nf = NumberFormat.getCurrencyInstance();
 
     private final static LatLng Montreal = new LatLng(45.5034, -73.62878);
 
@@ -85,7 +90,7 @@ public class ParkingsActivity extends FragmentActivity implements OnMapReadyCall
                 builder.include(latLng);
 
                 MarkerOptions marker = new MarkerOptions()
-                        .position(latLng).title(toTitle(spot));
+                        .position(latLng).title(spot.getId());
 
                 if (spot.getAvailability()) {
                     marker.icon(green);
@@ -100,24 +105,36 @@ public class ParkingsActivity extends FragmentActivity implements OnMapReadyCall
                 public boolean onMarkerClick(final Marker marker) {
                     final ParkingSpot spot = spotsMap.get(marker);
                     if (spot != null) {
-                        UpdateStateAsyncTask task = new UpdateStateAsyncTask(spot.getId(), !spot.getAvailability(),
-                                parkingSpotsService, new CompletionCallback<Boolean>() {
-                            @Override
-                            public void onCompletion(AutomateResult<Boolean> result) {
-                                if (result != null && result.getResult() && result.hasError()) {
-                                    Toast.makeText(getApplicationContext(), "Parking state not updated", Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(ParkingsActivity.this);
+                        dialog.setTitle("Parking spot: " +spot.getId());
+                        dialog.setMessage(toBody(spot));
+                        dialog.setNegativeButton("Cancel", null);
+                        dialog.setPositiveButton(bookLabel(spot), new DialogInterface.OnClickListener() {
 
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Parking state updated", Toast.LENGTH_SHORT).show();
-                                    if (!spot.getAvailability()) {
-                                        marker.setIcon(green);
-                                    } else {
-                                        marker.setIcon(red);
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                UpdateStateAsyncTask task = new UpdateStateAsyncTask(spot.getId(), !spot.getAvailability(),
+                                        parkingSpotsService, new CompletionCallback<Boolean>() {
+                                    @Override
+                                    public void onCompletion(AutomateResult<Boolean> result) {
+                                        if (result != null && result.getResult() && result.hasError()) {
+                                            Toast.makeText(getApplicationContext(), "Parking state not updated", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Parking state updated", Toast.LENGTH_SHORT).show();
+                                            if (!spot.getAvailability()) {
+                                                marker.setIcon(green);
+                                            } else {
+                                                marker.setIcon(red);
+                                            }
+                                        }
                                     }
-                                }
+                                });
+                                task.execute();
                             }
                         });
-                        task.execute();
+                        dialog.show();
+                        return true;
                     }
                     return false;
                 }
@@ -130,11 +147,17 @@ public class ParkingsActivity extends FragmentActivity implements OnMapReadyCall
 
     }
 
-    private String toTitle(ParkingSpot spot) {
+    private String toBody(ParkingSpot spot) {
         String str = "";
         if (spot != null) {
-            str = spot.getId() + "\\n test";
+            str += "Available: " + spot.getAvailability() + "\n";
+            str += "Discount: " + spot.getDiscount() + "\n";
+            str += "Price: " + nf.format(spot.getBasePrice()) + "\n";
         }
         return str;
+    }
+
+    private String bookLabel(ParkingSpot spot){
+        return spot.getAvailability() ? "Book" : "Release";
     }
 }
