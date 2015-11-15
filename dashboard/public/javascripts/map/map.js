@@ -70,11 +70,11 @@ angular
     };
 
     vm.init = function() {
-      var lagare = new google.maps.LatLng(45.5955694, -73.5948246);
+      var lagare = new google.maps.LatLng(45.5155694, -73.5948246);
 
       vm.map = new google.maps.Map(document.getElementById('map'), {
         center: lagare,
-        zoom: 11
+        zoom: 13
       });
 
       vm.addSnowButton();
