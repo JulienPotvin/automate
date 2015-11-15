@@ -17,6 +17,9 @@ import static com.automate.automate.http.HttpUtils.urlBuilder;
 public class ParkingClient {
 
     public final static String CONSUMER = "consumer";
+    public final static String PARKING = "parking";
+    public final static String LIST_STATES = "listStates";
+
     public final static String NEARBY_PARKINGS = "ListNearbyParkings";
     public final static String QUERY_PARAM_LATITUDE = "userLatitude";
     public final static String QUERY_PARAM_LONGITUDE = "userLongitude";
@@ -35,7 +38,7 @@ public class ParkingClient {
     public String execute(Request request) throws AutomateException {
         try {
             Response response = client.newCall(request).execute();
-            return response.toString();
+            return response.body().string();
         } catch (IOException ex) {
             throw new AutomateNetworkException(request, ex);
         }
@@ -50,6 +53,13 @@ public class ParkingClient {
                 .addQueryParameter(QUERY_PARAM_LATITUDE, latitude)
                 .addQueryParameter(QUERY_PARAM_LONGITUDE, longitude)
                 .addQueryParameter(QUERY_PARAM_PARKING_DURATION, parkingDuration)
+                .build();
+    }
+
+    public static HttpUrl parkingUrl(){
+        return urlBuilder()
+                .addPathSegment(PARKING)
+                .addPathSegment(LIST_STATES)
                 .build();
     }
 }

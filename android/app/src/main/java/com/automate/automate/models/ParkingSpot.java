@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,9 +27,10 @@ import lombok.Value;
 public class ParkingSpot implements Parcelable {
     private final static String LOGGER_TAG = ParkingSpot.class.getName();
 
-    private final static String JSON_ID = "id";
-    private final static String JSON_LATITUDE = "latitude";
-    private final static String JSON_LONGITUDE = "longitude";
+    private final static String JSON_ID = "parkingId";
+    private final static String JSON_PARKING_LOCATION = "parkingLocation";
+    private final static String JSON_LATITUDE = "lat";
+    private final static String JSON_LONGITUDE = "long";
 
     private final String id;
     private final Double latitude;
@@ -37,8 +39,9 @@ public class ParkingSpot implements Parcelable {
     public static ParkingSpot fromPayload(JSONObject reader) throws AutomateJsonParsingException {
         try {
             String id = reader.getString(JSON_ID);
-            Double latitude = reader.getDouble(JSON_LATITUDE);
-            Double longitude = reader.getDouble(JSON_LONGITUDE);
+            JSONObject location = reader.getJSONObject(JSON_PARKING_LOCATION);
+            Double latitude = location.getDouble(JSON_LATITUDE);
+            Double longitude = location.getDouble(JSON_LONGITUDE);
 
             return builder()
                     .id(id)
@@ -53,7 +56,7 @@ public class ParkingSpot implements Parcelable {
 
     public static List<ParkingSpot> fromArrayPayload(String jsonArray) throws AutomateJsonParsingException {
         try {
-            List<ParkingSpot> result = Collections.emptyList();
+            List<ParkingSpot> result = new ArrayList<>();
             Log.d(LOGGER_TAG, String.format("Parsing: %s", jsonArray));
 
             if (!TextUtils.isEmpty(jsonArray)) {
