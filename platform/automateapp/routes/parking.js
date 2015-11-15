@@ -49,8 +49,36 @@ router.get('/list', function(req, res){
 });
 
 //FOR TEST ONLY
-router.get('listStates', function(req, res){
+var toState = function(raw){
+  return raw.hits.hits.map(function(hit){
+    var root = hit._source;
+    var latLong = root.spot_latlon;
+    return {
+              parkingId: root.spot_id,
+              parkingLocation: {
+                  lat  :latLong[0],
+                  long :latLong[1]
+              },
+              physicalAvailability: root.spot_availability,
+              base_price: root.spot_base_price,
+           };
+  });
+
+
+}
+router.get('/listStates', function(req, res){
   var es = req.es;
+  es.search({
+    index : 'automate',
+    query : { match_all : {} }
+  },function(error,response){
+    if(error){
+      console.log('oooo noon! ' + error);
+    } else {
+      res.json(toState(response))
+    }
+  }
+);
 
 });
 
