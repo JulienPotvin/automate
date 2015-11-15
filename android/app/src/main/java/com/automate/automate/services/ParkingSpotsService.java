@@ -16,4 +16,6 @@ public interface ParkingSpotsService {
     AutomateResult<List<ParkingSpot>> findNearby(Location location, Long duration);
     AutomateResult<List<ParkingSpot>> findNearbyDestination(String query, Location location, Long duration);
 
+    AutomateResult<Boolean> updateAvailable(String id, boolean state);
+
 }

@@ -32,8 +32,12 @@ public class ParkingSpot implements Parcelable {
     private final static String JSON_LATITUDE = "lat";
     private final static String JSON_LONGITUDE = "long";
     private final static String JSON_AVAILABILTY = "physicalAvailability";
+    private final static String JSON_BASE_PRICE = "basePrice";
+    private final static String JSON_DISCOUNT = "discount";
 
     private final String id;
+    private final String discount;
+    private final Double basePrice;
     private final Double latitude;
     private final Double longitude;
     private final Boolean availability;
@@ -45,12 +49,16 @@ public class ParkingSpot implements Parcelable {
             Double latitude = location.getDouble(JSON_LATITUDE);
             Double longitude = location.getDouble(JSON_LONGITUDE);
             Boolean availability = reader.getBoolean(JSON_AVAILABILTY);
+            String discount = reader.optString(JSON_DISCOUNT);
+            Double price = reader.getDouble(JSON_BASE_PRICE);
 
             return builder()
                     .id(id)
                     .latitude(latitude)
                     .longitude(longitude)
                     .availability(availability)
+                    .basePrice(price)
+                    .discount(discount)
                     .build();
 
         } catch (JSONException e) {
@@ -83,6 +91,8 @@ public class ParkingSpot implements Parcelable {
                 .latitude(in.readDouble())
                 .longitude(in.readDouble())
                 .availability(in.readByte() != 0)
+                .discount(in.readString())
+                .basePrice(in.readDouble())
                 .build();
     }
 
@@ -97,6 +107,8 @@ public class ParkingSpot implements Parcelable {
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
         dest.writeByte((byte) (this.availability ? 1 : 0));
+        dest.writeString(this.discount);
+        dest.writeDouble(this.basePrice);
     }
 
     public static final Creator<ParkingSpot> CREATOR = new Creator<ParkingSpot>() {
