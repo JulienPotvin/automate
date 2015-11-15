@@ -31,10 +31,12 @@ public class ParkingSpot implements Parcelable {
     private final static String JSON_PARKING_LOCATION = "parkingLocation";
     private final static String JSON_LATITUDE = "lat";
     private final static String JSON_LONGITUDE = "long";
+    private final static String JSON_AVAILABILTY = "physicalAvailability";
 
     private final String id;
     private final Double latitude;
     private final Double longitude;
+    private final Boolean availability;
 
     public static ParkingSpot fromPayload(JSONObject reader) throws AutomateJsonParsingException {
         try {
@@ -42,11 +44,13 @@ public class ParkingSpot implements Parcelable {
             JSONObject location = reader.getJSONObject(JSON_PARKING_LOCATION);
             Double latitude = location.getDouble(JSON_LATITUDE);
             Double longitude = location.getDouble(JSON_LONGITUDE);
+            Boolean availability = reader.getBoolean(JSON_AVAILABILTY);
 
             return builder()
                     .id(id)
                     .latitude(latitude)
                     .longitude(longitude)
+                    .availability(availability)
                     .build();
 
         } catch (JSONException e) {
@@ -78,6 +82,7 @@ public class ParkingSpot implements Parcelable {
                 .id(in.readString())
                 .latitude(in.readDouble())
                 .longitude(in.readDouble())
+                .availability(in.readByte() != 0)
                 .build();
     }
 
@@ -91,6 +96,7 @@ public class ParkingSpot implements Parcelable {
         dest.writeString(this.id);
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
+        dest.writeByte((byte) (this.availability ? 1 : 0));
     }
 
     public static final Creator<ParkingSpot> CREATOR = new Creator<ParkingSpot>() {

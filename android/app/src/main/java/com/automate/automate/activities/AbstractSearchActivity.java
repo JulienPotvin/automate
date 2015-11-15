@@ -41,13 +41,11 @@ public abstract class AbstractSearchActivity extends AppCompatActivity {
     protected LocationManager locationManager;
 
     protected View mProgressView;
-    protected View mQueryFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mQueryFormView = findViewById(R.id.query_form);
         mProgressView = findViewById(R.id.query_progress);
 
         parkingSpotsService = new ParkingSpotsServiceImpl();
@@ -73,13 +71,11 @@ public abstract class AbstractSearchActivity extends AppCompatActivity {
                     getString(R.string.empty_query),
                     Toast.LENGTH_SHORT).show();
         } else {
-            attemptQuery(query);
+            findNearby(query);
         }
     }
 
-
-
-    protected void attemptQuery(String query) {
+    protected void findNearby(String query) {
         Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         FindNearbyAsyncTask task = new FindNearbyAsyncTask(query, locationGPS, null,
@@ -108,7 +104,7 @@ public abstract class AbstractSearchActivity extends AppCompatActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     protected void showProgress(final boolean show) {
-        if(mProgressView == null || mQueryFormView == null) {
+        if(mProgressView == null) {
             return;
         }
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -116,15 +112,6 @@ public abstract class AbstractSearchActivity extends AppCompatActivity {
         // the progress spinner.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mQueryFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mQueryFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mQueryFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
 
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
@@ -138,7 +125,6 @@ public abstract class AbstractSearchActivity extends AppCompatActivity {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mQueryFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 }

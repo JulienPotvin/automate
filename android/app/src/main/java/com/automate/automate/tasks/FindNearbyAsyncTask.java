@@ -2,6 +2,7 @@ package com.automate.automate.tasks;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import com.automate.automate.models.ParkingSpot;
 import com.automate.automate.services.AutomateResult;
@@ -36,8 +37,12 @@ public class FindNearbyAsyncTask extends AsyncTask<Void, Void, AutomateResult<Li
 
     @Override
     protected AutomateResult<List<ParkingSpot>> doInBackground(Void... params) {
+        if (TextUtils.isEmpty(query)){
+            return service.findNearby(location, duration);
 
-        return service.findNearby(query, location, duration);
+        } else {
+        return service.findNearbyDestination(query, location, duration);
+        }
     }
 
     @Override

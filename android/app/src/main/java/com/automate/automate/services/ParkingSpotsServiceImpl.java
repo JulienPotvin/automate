@@ -33,7 +33,7 @@ public class ParkingSpotsServiceImpl implements ParkingSpotsService {
     }
 
     @Override
-    public AutomateResult<List<ParkingSpot>> findNearby(String query, Location location, Long duration) {
+    public AutomateResult<List<ParkingSpot>> findNearby(Location location, Long duration) {
 
         String degreesLatitude = Location.convert(location.getLatitude(), Location.FORMAT_DEGREES);
         String degreeLongitude = Location.convert(location.getLongitude(), Location.FORMAT_DEGREES);
@@ -43,7 +43,7 @@ public class ParkingSpotsServiceImpl implements ParkingSpotsService {
             Request request =
                     requestBuilder()
                             .get()
-                            .url(parkingUrl())
+                            .url(nearbyParkingUrl(degreesLatitude, degreeLongitude))
                             .build();
 
             String payload = parkingClient.execute(request);
@@ -55,17 +55,8 @@ public class ParkingSpotsServiceImpl implements ParkingSpotsService {
         }
     }
 
-    private static final List<ParkingSpot> spots =
-            Arrays.asList(
-                    ParkingSpot.builder()
-                        .id("id1")
-                        .latitude(45.52588)
-                        .longitude(-73.59546)
-                        .build(),
-                    ParkingSpot.builder()
-                            .id("id2")
-                            .latitude(45.527058)
-                            .longitude(-73.597914)
-                            .build()
-            );
+    @Override
+    public AutomateResult<List<ParkingSpot>> findNearbyDestination(String query, Location location, Long duration) {
+        return null;
+    }
 }
