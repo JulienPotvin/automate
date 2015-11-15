@@ -46,8 +46,8 @@ var getStates = function() {
       return {
           parkingId: root.spot_id,
           parkingLocation: {
-              lat: latLong[0],
-              long: latLong[1]
+              lat: latLong[1],
+              long: latLong[0]
           },
           pricingInfo: {
             basePrice: 2.75,
