@@ -11,7 +11,7 @@ var elasticsearch = require('elasticsearch');
 //Elasticsearch
 
 var client = new elasticsearch.Client({
-  host: 'localhost:9200',
+  host: 'dockerhost:9200',
   log: 'debug'
 });
 
@@ -38,7 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //Make our db accessible to our router
 app.use(function(req,res,next){
-    req.db = db;
     req.es = client;
     next();
 });
