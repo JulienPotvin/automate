@@ -1,5 +1,6 @@
 angular
   .module('automate.dashboard', [
+    'ui.bootstrap',
     'ui.bootstrap.datetimepicker'
   ])
   .run(function($interval, mapService) {

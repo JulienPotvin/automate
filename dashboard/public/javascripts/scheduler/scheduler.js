@@ -14,6 +14,15 @@ angular
       }
     };
   })
+  .controller('ModalInstanceCtrl', function($scope, $uibModalInstance) {
+    $scope.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+  })
   .controller('SchedulerCtrl', function(mapService, schedulerService) {
     var vm = this;
 
@@ -40,6 +49,10 @@ angular
       });
 
       schedulerService.submitAlert(alert);
+    };
+
+    vm.shouldDisplaySnowAlert = function() {
+      return Object.keys(vm.mapService.selected).length;
     };
   })
   .service('schedulerService', function($http) {

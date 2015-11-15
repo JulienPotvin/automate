@@ -14,8 +14,60 @@ angular
       }
     };
   })
-  .controller('MapCtrl', function($rootScope, $scope, google, mapService) {
+  .controller('MapCtrl', function($rootScope, $scope, $uibModal, google, mapService) {
     var vm = this;
+
+    vm.addSnowButton = function() {
+      function CenterControl(controlDiv) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Click to recenter the map';
+        controlDiv.appendChild(controlUI);
+
+        var button = document.createElement('button');
+        button.className = 'btn btn-primary';
+        button.style.cursor = 'pointer';
+        button.innerHTML = 'Create new snow plow alert';
+        controlUI.appendChild(button);
+
+        button.addEventListener('click', function() {
+          console.log('YES');
+          vm.showModal();
+        });
+      }
+
+      var centerControlDiv = document.createElement('div');
+      centerControlDiv.style.display = 'none';
+      new CenterControl(centerControlDiv, vm.map);
+
+      centerControlDiv.index = 1;
+
+      vm.map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+      vm.mapControls = centerControlDiv;
+    };
+
+    vm.showModal = function() {
+      var modalInstance = $uibModal.open({
+        animation: $scope.animationsEnabled,
+        templateUrl: '/javascripts/scheduler/modal.html',
+        controller: 'ModalInstanceCtrl',
+      });
+
+      modalInstance.result.then(function() {
+        console.log('success');
+        mapService.selected = {};
+        vm.mapControls.style.display = 'none';
+        $rootScope.$emit('automate.alert.snow');
+      });
+    };
 
     vm.init = function() {
       var lagare = new google.maps.LatLng(45.5955694, -73.5948246);
@@ -24,6 +76,8 @@ angular
         center: lagare,
         zoom: 11
       });
+
+      vm.addSnowButton();
 
       vm.mapService = mapService;
 
@@ -52,7 +106,8 @@ angular
             title: p.parkingId.toString()
           });
           marker.addListener('click', function() {
-            vm.toggleMarkerSelection(p, marker);
+            vm.toggleParkingSelection(p, marker);
+            $rootScope.$apply();
           });
           mapService.markers[p.parkingId] = marker;
         }
@@ -63,7 +118,7 @@ angular
       });
     };
 
-    vm.toggleMarkerSelection = function(parking, marker) {
+    vm.toggleParkingSelection = function(parking, marker) {
       var selected = mapService.selected;
       var id = parking.parkingId;
 
@@ -75,7 +130,11 @@ angular
         mapService.setIconForMarker(parking, marker);
       }
 
-      $rootScope.$apply();
+      if (Object.keys(selected).length) {
+        vm.mapControls.style.display = 'block';
+      } else {
+        vm.mapControls.style.display = 'none';
+      }
     };
   })
   .service('mapService', function($http, $q) {
@@ -127,10 +186,13 @@ angular
 
     this.calculateParkingPrice = function(parking) {
       var price = parking.pricingInfo.basePrice;
-      var delta = parking.pricingInfo.surgePriceIncrease;
+      var deltap = parking.pricingInfo.surgePriceIncrease;
+      var deltam = parking.pricingInfo.declinePriceDecrease;
 
       if (this.isSurge()) {
-        price += delta;
+        price += deltap;
+      } else if (this.isLow()) {
+        price -= deltam;
       }
 
       return price;
