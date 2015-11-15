@@ -112,7 +112,7 @@ angular
         return false;
       }
 
-      return (available.length / this.parkings.length) >= 0.4;
+      return (available.length / this.parkings.length) <= 0.4;
     };
 
     this.isLow = function() {

@@ -16,7 +16,7 @@
         <td>{{ ::p.physicalAvailability.toString() | uppercase }}</td>
         <td>$ {{ ::p.pricingInfo.basePrice | number: 2 }}</td>
         <td></td>
-        <td>{{ vm.mapService.isSurge().toString() | uppercase }}</td>
+        <td>{{ vm.displayAvailabilityState() | uppercase }}</td>
         <td>$ {{ vm.mapService.calculateParkingPrice(p) | number: 2 }}</td>
     </tbody>
   </table>

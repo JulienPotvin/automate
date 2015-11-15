@@ -24,4 +24,14 @@ angular
         vm.parkings = parkings;
       });
     };
+
+    vm.displayAvailabilityState = function() {
+      if (mapService.isSurge()) {
+        return 'surge';
+      } else if (mapService.isLow()) {
+        return 'low';
+      } else {
+        return 'normal';
+      }
+    };
   });
