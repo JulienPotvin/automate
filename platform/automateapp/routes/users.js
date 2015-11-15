@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 /*
- * GET userlist.
+ * GET userlist.dd
  */
 router.get('/userlist', function(req, res) {
     var db = req.db;

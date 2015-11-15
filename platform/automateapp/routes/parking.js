@@ -93,12 +93,33 @@ router.get('/listStates', function(req, res){
 router.post('/state', function(req, res) {
   var es = req.es;
   var body = req.body;
-
+  console.log(body);
   var parkingId = body.parkingId;
   var state = body.state;
+  console.log('parkingId' +parkingId );
+  es.update({
+	  index: 'automate',
+	  type: 'spots',
+	  id: parkingId ,
+	  body: {
+	    // put the partial document under the `doc` key
+	    doc: {
+	      'spot_availability': state
+	    }
+	  }
+	}, function (error, response) {
+		if(error){
+		      console.log('oooo noon! ' + error);
+		    } else {
+		      res.sendStatus(200);
+		    }
+	})
+  
   // TODO : UPDATE parkingSpotIndex
   res.sendStatus(200);
 });
+
+
 
 /*POST /parking/regulate
 
