@@ -63,7 +63,7 @@ angular
       var self = this;
 
       if (!self.parkings || force) {
-        return $http.get('/rest/parking/list').then(function(response) {
+        return $http.get('http://localhost:3001/parking/listStates').then(function(response) {
           self.parkings = response.data;
           return self.parkings;
         });
