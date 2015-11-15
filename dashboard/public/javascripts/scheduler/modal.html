@@ -1,8 +1,10 @@
 <div class="modal-header">
-  <h3 class="modal-title">Snow Plow Alert</h3>
+  <h3 class="modal-title" ng-if="!isStoreMode">Snow Plow Alert</h3>
+  <h3 class="modal-title" ng-if="isStoreMode">Parking Promotion</h3>
 </div>
 <div class="modal-body">
-  <scheduler></scheduler>
+  <scheduler ng-if="!isStoreMode"></scheduler>
+  <discount ng-if="isStoreMode"></discount>
 </div>
 <div class="modal-footer">
   <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>

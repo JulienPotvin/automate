@@ -6,7 +6,9 @@ angular
       templateUrl: '/javascripts/map/map.html',
       replace: true,
       controller: 'MapCtrl',
-      scope: {},
+      scope: {
+        isStoreMode: '='
+      },
       controllerAs: 'vm',
       bindToController: true,
       link: function(scope, element, attrs, ctrl) {
@@ -35,11 +37,14 @@ angular
         var button = document.createElement('button');
         button.className = 'btn btn-primary';
         button.style.cursor = 'pointer';
-        button.innerHTML = 'Create new snow plow alert';
+        if (vm.isStoreMode) {
+          button.innerHTML = 'Create new promotion';
+        } else {
+          button.innerHTML = 'Create new snow plow alert';
+        }
         controlUI.appendChild(button);
 
         button.addEventListener('click', function() {
-          console.log('YES');
           vm.showModal();
         });
       }
@@ -59,10 +64,12 @@ angular
         animation: $scope.animationsEnabled,
         templateUrl: '/javascripts/scheduler/modal.html',
         controller: 'ModalInstanceCtrl',
+        resolve: {
+          isStoreMode: vm.isStoreMode
+        }
       });
 
       modalInstance.result.then(function() {
-        console.log('success');
         mapService.selected = {};
         vm.mapControls.style.display = 'none';
         $rootScope.$emit('automate.alert.snow');
@@ -80,6 +87,18 @@ angular
       vm.addSnowButton();
 
       vm.mapService = mapService;
+
+      if (vm.isStoreMode) {
+        marker = new google.maps.Marker({
+          position: {
+            lat: 45.5192677,
+            lng: -73.5825941,
+          },
+          icon: '/images/markers/hm.png',
+          map: vm.map,
+          title: 'hm'
+        });
+      }
 
       mapService.getParkingList().then(function(parkings) {
         vm.refreshParkings(parkings);
@@ -113,7 +132,7 @@ angular
         }
 
         if (!mapService.selected[p.parkingId]) {
-          mapService.setIconForMarker(p, marker);
+          mapService.setIconForMarker(p, marker, vm.isStoreMode);
         }
       });
     };
@@ -127,7 +146,7 @@ angular
         marker.setIcon('/images/markers/blue.png');
       } else {
         delete selected[id];
-        mapService.setIconForMarker(parking, marker);
+        mapService.setIconForMarker(parking, marker, vm.isStoreMode);
       }
 
       if (Object.keys(selected).length) {
@@ -198,12 +217,16 @@ angular
       return price;
     };
 
-    this.setIconForMarker = function(parking, marker) {
+    this.setIconForMarker = function(parking, marker, isStoreMode) {
       var color = parking.physicalAvailability ? 'green' : 'red';
       var marker = this.markers[parking.parkingId];
 
       if (marker) {
-        marker.setIcon('/images/markers/' + color + '.png');
+        if (isStoreMode) {
+          marker.setIcon('/images/markers/yellow.png');
+        } else {
+          marker.setIcon('/images/markers/' + color + '.png');
+        }
       }
     };
   });

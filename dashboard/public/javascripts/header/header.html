@@ -22,7 +22,10 @@
     <div class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
         <li>
-          <a><h1>City Operations Interface</h1></a>
+          <a>
+            <h1 ng-if="!isStoreMode">Operations Interface</h1>
+            <h1 ng-if="isStoreMode">Stores Interface</h1>
+          </a>
         </li>
       </ul>
     </div>

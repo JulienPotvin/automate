@@ -3,7 +3,9 @@ angular.module('automate.dashboard').directive('header', function() {
     restrict: 'E',
     templateUrl: '/javascripts/header/header.html',
     replace: true,
-    scope: { },
-    link: function() {  }
+    scope: {
+      isStoreMode: '='
+    },
+    link: function() { }
   };
 });

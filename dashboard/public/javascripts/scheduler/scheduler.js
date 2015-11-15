@@ -14,7 +14,11 @@ angular
       }
     };
   })
-  .controller('ModalInstanceCtrl', function($scope, $uibModalInstance) {
+  .controller('ModalInstanceCtrl', function($scope, $uibModalInstance, isStoreMode) {
+    $scope.isStoreMode = isStoreMode;
+
+    console.log($scope.isStoreMode);
+
     $scope.ok = function () {
       $uibModalInstance.close();
     };
