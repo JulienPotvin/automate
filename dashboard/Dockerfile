@@ -1,7 +1,9 @@
 FROM node:5.0.0-wheezy
 
-ADD . /app
+ADD package.json /app/package.json
 RUN cd /app; npm install
+
+ADD . /app/
 
 EXPOSE 3000
 
