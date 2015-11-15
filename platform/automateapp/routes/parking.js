@@ -87,7 +87,7 @@ router.get('/listStates', function(req, res){
 
 });
 
-/*
+/* ok
  * POST state
  input => {
             parkingId:UUID,
@@ -121,7 +121,7 @@ router.post('/state', function(req, res) {
 	})
   
   // TODO : UPDATE parkingSpotIndex
-  res.sendStatus(200);
+ /* res.sendStatus(200);*/
 });
 
 
