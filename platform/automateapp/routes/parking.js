@@ -2,28 +2,25 @@ var express = require('express');
 var router = express.Router();
 
 var toSpot = function(hit){
-  var root = hit.get("_source");
-  var id = root.get("spot_id");
-  var latLong = root.get("spot_latlon");
-  var latitude = latLong.get(0);
-  var longitude = latLong.get(1);
+  var root = hit._source;
+  var latLong = root.spot_latlon;
   return {
-            parkingId: id,
+            parkingId: root.spot_id,
             parkingLocation: {
-                lat  :latitude,
-                long :longitude
+                lat  :latLong[0],
+                long :latLong[1]
             }
          };
 };
 
 var toSpots = function(raw){
   return raw
-           .get("hits")
-           .get("hits")
+           .hits
+           .hits
            .map(toSpot);
 };
 
-/* 
+/*
   GET
   input  => {}
   output => [
@@ -39,15 +36,22 @@ var toSpots = function(raw){
 */
 router.get('/list', function(req, res){
     var es = req.es;
-    var allRawSpots = es.get(
-      "elastic search query here",//TODO: use real query
-      function(error,response){
+    es.search({
+      index : 'automate',
+      query: { match_all: {} }
+    },function(error,response){
         if(error){
           console.log('oooo nooo! ' + error);
         } else {
           res.json(toSpots(response));
         }
-      });
+    });
+});
+
+//FOR TEST ONLY
+router.get('listStates', function(req, res){
+  var es = req.es;
+
 });
 
 /*
