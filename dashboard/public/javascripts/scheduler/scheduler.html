@@ -1,0 +1,14 @@
+<div class="scheduler" ng-show="vm.mapService.selected.length > 0">
+  <h3>Setup a new snow alert</h3>
+  <form>
+      <div class="form-group">
+        <label for="">Snow alert date</label>
+        <datetimepicker ng-model="vm.date"></datetimepicker>
+      </div>
+      <div class="form-group">
+        <label for="">Duration (in hours)</label>
+        <input type="text" class="form-control" placeholder="how many hours" ng-model="vm.duration">
+      </div>
+      <button type="submit" class="btn btn-default" ng-click="vm.submit()">Submit</button>
+  </form>
+</div>

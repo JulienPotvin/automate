@@ -14,7 +14,7 @@ angular
       }
     };
   })
-  .controller('MapCtrl', function($timeout, google, mapService) {
+  .controller('MapCtrl', function($rootScope, google, mapService) {
     var vm = this;
 
     vm.init = function() {
@@ -32,7 +32,7 @@ angular
               lat: p.parkingLocation.lat,
               lng: p.parkingLocation.long,
             },
-            icon: '/images/markers/default.png',
+            icon: '/images/markers/grey.png',
             map: vm.map,
             title: p.parkingId.toString()
           });
@@ -47,21 +47,59 @@ angular
 
       if (index === -1) {
         selected.push(this);
-        this.setIcon('/images/markers/selected.png');
+        this.setIcon('/images/markers/red.png');
       } else {
         selected.splice(index, 1);
-        this.setIcon('/images/markers/default.png');
+        this.setIcon('/images/markers/grey.png');
       }
+
+      $rootScope.$apply();
     };
   })
-  .service('mapService', function($http) {
-    this.getParkingList = function() {
+  .service('mapService', function($http, $q) {
+    this.selected = [];
+
+    this.getParkingList = function(force) {
       var self = this;
 
-      return $http.get('/rest/parking/list').then(function(response) {
-        self.parkings = response.data;
-        self.selected = [];
-        return self.parkings;
-      });
+      if (!self.parkings || force) {
+        return $http.get('/rest/parking/list').then(function(response) {
+          self.parkings = response.data;
+          return self.parkings;
+        });
+      } else {
+        var deferred = $q.defer();
+
+        deferred.resolve(self.parkings);
+
+        return deferred.promise;
+      }
+    };
+
+    this.getAvailableParkings = function() {
+      return this.parkings.filter(function(p) {
+        return p.available === true;
+      })
+    };
+
+    this.isSurge = function() {
+      var available = this.getAvailableParkings();
+
+      if (!this.parkings.length) {
+        return false;
+      }
+
+      return (available.length / this.parkings.length) <= 0.4;
+    };
+
+    this.calculateParkingPrice = function(parking) {
+      var price = parking.pricingInfo.basePrice;
+      var delta = parking.pricingInfo.surgePriceIncrease;
+
+      if (this.isSurge()) {
+        price += delta;
+      }
+
+      return price;
     };
   });

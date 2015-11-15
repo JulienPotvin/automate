@@ -1,5 +1,8 @@
 package com.automate.automate.models;
 
+import android.location.LocationManager;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -20,7 +23,7 @@ import lombok.Value;
  */
 @Value
 @Builder
-public class ParkingSpot {
+public class ParkingSpot implements Parcelable {
     private final static String LOGGER_TAG = ParkingSpot.class.getName();
 
     private final static String JSON_ID = "id";
@@ -67,4 +70,35 @@ public class ParkingSpot {
         }
     }
 
+    public static ParkingSpot fromParcel(Parcel in) {
+        return ParkingSpot.builder()
+                .id(in.readString())
+                .latitude(in.readDouble())
+                .longitude(in.readDouble())
+                .build();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeDouble(this.latitude);
+        dest.writeDouble(this.longitude);
+    }
+
+    public static final Creator<ParkingSpot> CREATOR = new Creator<ParkingSpot>() {
+        @Override
+        public ParkingSpot createFromParcel(Parcel in) {
+            return fromParcel(in);
+        }
+
+        @Override
+        public ParkingSpot[] newArray(int size) {
+            return new ParkingSpot[size];
+        }
+    };
 }

@@ -59,8 +59,13 @@ var toState = function(raw){
                   lat  :latLong[0],
                   long :latLong[1]
               },
-              physicalAvailability: root.spot_availability,
-              base_price: root.spot_base_price,
+              pricingInfo :{
+                basePrice : 2.75,
+                surgePriceIncrease: 0.25,
+                declinePriceDecrease : 0.25
+              }
+              // physicalAvailability: root.spot_availability,
+              // base_price: root.spot_base_price,
            };
   });
 
