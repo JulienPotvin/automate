@@ -7,8 +7,8 @@ var toSpot = function(hit){
   return {
             parkingId: root.spot_id,
             parkingLocation: {
-                lat  :latLong[0],
-                long :latLong[1]
+                lat  :latLong[1],
+                long :latLong[0]
             }
          };
 };
